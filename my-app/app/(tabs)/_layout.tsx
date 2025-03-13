@@ -1,36 +1,28 @@
-import { Tabs, useRouter } from "expo-router";
+import { Tabs } from "expo-router";
 import { Home as HomeIcon, ShoppingCart, Globe } from "@tamagui/lucide-icons";
-import { themes } from "theme";
-import {
-  NavigationContainer,
-  DefaultTheme,
-  DarkTheme,
-} from "@react-navigation/native";
+import { themes, mainColor } from "theme";
+import { useTheme } from "context/ThemeContext";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function TabsLayout() {
+  const { backgroundColor } = useTheme();
+
   return (
-    <NavigationContainer theme={themes.dark ? DarkTheme : DefaultTheme}>
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <Tabs
         screenOptions={{
           headerShown: false,
           tabBarStyle: {
-            backgroundColor: themes.dark.gray1,
+            backgroundColor: backgroundColor,
             height: 100,
             justifyContent: "center",
             alignItems: "center",
             borderTopWidth: 0,
             shadowColor: "$black",
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.6,
-            shadowRadius: 5,
-            elevation: 5,
+            shadowOffset: { width: 0, height: 0.1 },
+            elevation: 0.2,
           },
-          tabBarLabelStyle: {
-            display: "none",
-          },
-          tabBarActiveTintColor: themes.dark
-            ? themes.dark.blue9
-            : themes.light.blue9,
+          tabBarActiveTintColor: themes.dark ? mainColor : mainColor,
           tabBarInactiveTintColor: themes.dark ? "#888" : "#888",
           tabBarItemStyle: {
             alignSelf: "center",
@@ -57,6 +49,6 @@ export default function TabsLayout() {
           }}
         />
       </Tabs>
-    </NavigationContainer>
+    </GestureHandlerRootView>
   );
 }

@@ -1,63 +1,41 @@
+// RootLayout.tsx
 import "../tamagui-web.css";
-
-import { useEffect } from "react";
-import {
-  ActivityIndicator,
-  StatusBar,
-  useColorScheme,
-  View,
-} from "react-native";
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
+import { useEffect, useState } from "react";
+import { StatusBar, useColorScheme } from "react-native";
 import { useFonts } from "expo-font";
-import { Redirect, SplashScreen, Stack } from "expo-router";
+import { router, Slot, SplashScreen, Stack } from "expo-router";
 import { Provider } from "./Provider";
-import { TamaguiProvider, useTheme } from "tamagui";
-import { AuthProvider, useAuthContext } from "./context/authContext";
+import { TamaguiProvider, Theme, View, Text, Button } from "tamagui";
+import { AuthProvider } from "context/AuthContext";
 import { ApolloProvider } from "@apollo/client";
 import client from "backend/apolloClient";
-
+import { Oxanium_700Bold } from "@expo-google-fonts/oxanium";
+import { Kanit_400Regular } from "@expo-google-fonts/kanit";
+import config from "tamagui.config";
+import { ThemeProvider, useTheme } from "context/ThemeContext";
+import DevTag from "../components/DevTag";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
 } from "expo-router";
 
 export const unstable_settings = {
-  // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: "(tabs)",
+  initialRouteName: "(stack)",
 };
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [interLoaded, interError] = useFonts({
     Inter: require("@tamagui/font-inter/otf/Inter-Medium.otf"),
     InterBold: require("@tamagui/font-inter/otf/Inter-Bold.otf"),
+    Oxanium_700Bold,
+    Kanit_400Regular,
   });
-
-  // const { isAuthenticated, loading } = useAuthContext();
-  // // console.warn('autenticated', isAuthenticated)
-
-  // if (loading) {
-  //   return (
-  //     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-  //       <ActivityIndicator size="large" />
-  //     </View>
-  //   );
-  // }
-  // if (!isAuthenticated) {
-  //   return ( 
-  //     <Redirect href="/(auth)/login" />
-  //   );
-  // }
 
   useEffect(() => {
     if (interLoaded || interError) {
-      // Hide the splash screen after the fonts have loaded (or an error was returned) and the UI is ready.
       SplashScreen.hideAsync();
     }
   }, [interLoaded, interError]);
@@ -67,11 +45,16 @@ export default function RootLayout() {
   }
 
   return (
-    // <AuthProvider>
-      <Providers>
-        <RootLayoutNav />
-      </Providers>
-    // </AuthProvider>
+    <ApolloProvider client={client}>
+      <TamaguiProvider config={config}>
+        <ThemeProvider>
+          <Providers>
+            <RootLayoutNav />
+            <DevTag />
+          </Providers>
+        </ThemeProvider>
+      </TamaguiProvider>
+    </ApolloProvider>
   );
 }
 
@@ -81,36 +64,83 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
-  const theme = useTheme();
+  const { theme } = useTheme();
+  const avatarFallback =
+    "https://i0.wp.com/digitalhealthskills.com/wp-content/uploads/2022/11/3da39-no-user-image-icon-27.png";
+
   return (
-    <TamaguiProvider>
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+    <AuthProvider>
+      <Theme name={theme}>
         <StatusBar
           barStyle={colorScheme === "dark" ? "light-content" : "dark-content"}
         />
-        <Stack>
-          <Stack.Screen
-            name="(tabs)"
-            options={{
-              headerShown: false,
-            }}
-          />
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <Stack>
+            <Stack.Screen
+              name="(tabs)"
+              options={{
+                headerShown: false,
+              }}
+            />
 
-          <Stack.Screen
-            name="modal"
-            options={{
-              title: "Tamagui + Expo",
-              presentation: "modal",
-              animation: "slide_from_right",
-              gestureEnabled: true,
-              gestureDirection: "horizontal",
-              contentStyle: {
-                backgroundColor: theme.background.val,
-              },
-            }}
-          />
-        </Stack>
-      </ThemeProvider>
-    </TamaguiProvider>
+            <Stack.Screen
+              name="index"
+              options={{
+                headerShown: false,
+                presentation: "fullScreenModal",
+                animation: "simple_push",
+                gestureEnabled: true,
+                gestureDirection: "horizontal",
+              }}
+            />
+
+            <Stack.Screen
+              name="user/new"
+              options={{
+                headerShown: false,
+                presentation: "modal",
+                animation: "simple_push",
+                gestureEnabled: true,
+                gestureDirection: "vertical",
+              }}
+            />
+
+            <Stack.Screen
+              name="card/[id]"
+              options={{
+                headerShown: false,
+                presentation: "formSheet",
+                animation: "simple_push",
+                gestureEnabled: true,
+                gestureDirection: "horizontal",
+              }}
+            />
+
+            <Stack.Screen
+              name="card/new"
+              options={{
+                headerShown: false,
+                presentation: "card",
+                animation: "slide_from_right",
+                gestureEnabled: true,
+                gestureDirection: "horizontal",
+              }}
+            />
+
+            <Stack.Screen
+              name="post/[id]"
+              options={{
+                sheetExpandsWhenScrolledToEdge: true,
+                headerShown: false,
+                presentation: "formSheet",
+                animation: "slide_from_bottom",
+                gestureEnabled: true,
+                gestureDirection: "horizontal",
+              }}
+            />
+          </Stack>
+        </GestureHandlerRootView>
+      </Theme>
+    </AuthProvider>
   );
 }
