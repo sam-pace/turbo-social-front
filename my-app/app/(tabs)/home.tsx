@@ -1,40 +1,80 @@
-import { ApolloProvider } from "@apollo/client";
-import CustomHeader from "app/components/Header";
-import Login from "app/components/LoginScreen";
-import Post from "app/components/Posts";
-import UserAvatar from "app/components/User";
-import { AuthProvider } from "app/context/authContext";
-import { useAuth } from "app/hooks/useAuth";
+import { ApolloProvider, useQuery } from "@apollo/client";
+import Post from "components/Posts";
 import client from "backend/apolloClient";
-import { router, useRouter } from "expo-router";
+import { Redirect, router } from "expo-router";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { Button, ScrollView, TamaguiProvider, View } from "tamagui";
+import { Button, Input, Label, ScrollView, View, Text, YStack } from "tamagui";
 import { themes } from "theme";
 import { ArrowBigLeft } from "@tamagui/lucide-icons";
+import { useAuth } from "context/AuthContext";
+import { useTheme } from "context/ThemeContext";
+import { ActivityIndicator, RefreshControl } from "react-native";
+import ToggleThemeButton from "components/ToggleThemeButton";
+import ThubLogo from "components/logos/THubLogo";
+import { useState, useCallback } from "react";
+import { GET_POSTS } from "graphql/query";
+import Avatar from "components/Avatar";
+import Curiosities from "lib/curiosities";
+import Lightbulb from "components/icons/bulb";
 
 export default function Home() {
+  const { isAuthenticated, loading } = useAuth();
+  const { backgroundColor } = useTheme();
+  const { refetch } = useQuery(GET_POSTS);
+
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const onRefresh = useCallback(() => {
+    setIsRefreshing(true);
+    refetch();
+    setTimeout(() => {
+      setIsRefreshing(false);
+    }, 2000);
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <Redirect href="/" />;
+  }
+
   return (
     <ApolloProvider client={client}>
-      <TamaguiProvider theme={themes}>
-        <SafeAreaProvider>
-          <CustomHeader logoType={"fuelhub"} />
-          <View flex={1} width={"100%"} height={"100%"} bg={themes.dark.gray1}>
-            <Button
-              width={"$0.75"}
-              icon={ArrowBigLeft}
-              justify={"flex-start"}
-              items={"center"}
-              onPress={() => router.push("/")}
-            ></Button>
-            <UserAvatar />
-            <ScrollView>
-              <View flex={1} justify="center" items="center">
-                <Post />
-              </View>
-            </ScrollView>
+      <SafeAreaProvider>
+        <View flex={1} width={"100%"} height={"100%"} bg={backgroundColor}>
+          <View
+            flexDirection="row"
+            justify={"space-between"}
+            mt={80}
+            mb={10}
+            paddingHorizontal={6}
+          >
+            <View height={40} width={100} gap={20}>
+              <ThubLogo />
+            </View>
+            <Avatar size={50} />
           </View>
-        </SafeAreaProvider>
-      </TamaguiProvider>
+          <ScrollView
+            refreshControl={
+              <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
+            }
+          >
+            <Curiosities onRefresh={onRefresh} />
+            <View position="absolute" t={76} l={16} flex={1}>
+              <Lightbulb />
+            </View>
+            <View flex={1} justify="center" items="center">
+              <Post />
+            </View>
+          </ScrollView>
+        </View>
+      </SafeAreaProvider>
     </ApolloProvider>
   );
 }

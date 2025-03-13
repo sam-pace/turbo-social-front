@@ -1,24 +1,34 @@
 import { ApolloProvider } from "@apollo/client";
-import CustomHeader from "app/components/Header";
 import client from "backend/apolloClient";
-import TurboCards from "app/components/TurboCards";
-import React from "react";
-import { View, Text, ScrollView } from "tamagui";
-import { themes } from "theme";
+import TurboCards from "components/TurboCards";
+import { View, ScrollView, Button, XStack } from "tamagui";
+import { CirclePlus } from "@tamagui/lucide-icons";
+import { router } from "expo-router";
+import TMarketLogo from "components/logos/TMarketLogo";
+import ToggleThemeButton from "components/ToggleThemeButton";
+import { useTheme } from "context/ThemeContext";
 
 export default function TruboMarket() {
+  const { backgroundColor } = useTheme();
   return (
     <ApolloProvider client={client}>
-      <View flex={1} width={"100%"} height={"100%"} bg={themes.dark.gray1}>
-        <CustomHeader logoType="turbomarket"/>
-        <ScrollView overflowX="hidden">
-          <View
-            width={"100%"}
-            flexDirection="row"
-            flexWrap="wrap"
-            items={"center"}
-            justify={"center"}
-          >
+      <View flex={1} bg={backgroundColor}>
+        <XStack
+          display="flex"
+          flexDirection="row"
+          justify="space-between"
+          items="center"
+          paddingHorizontal={6}
+          mt={81}
+          mb={10}
+        >
+          <View height={40} width={179} gap={20} t={2}>
+            <TMarketLogo />
+          </View>
+        </XStack>
+
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View paddingHorizontal={5}>
             <TurboCards />
           </View>
         </ScrollView>
