@@ -46,6 +46,7 @@ const lightShadowColor = 'rgba(0,0,0,0.04)'
 const lightShadowColorStrong = 'rgba(0,0,0,0.085)'
 const darkShadowColor = 'rgba(0,0,0,0.2)'
 const darkShadowColorStrong = 'rgba(0,0,0,0.3)'
+export const mainColor = 'rgb(158, 14, 183)'
 
 const darkColors = {
   ...colorTokens.dark.blue,
@@ -70,6 +71,7 @@ const lightColors = {
 }
 
 const color = {
+  main: '#391282',
   white0: 'rgba(255,255,255,0)',
   white075: 'rgba(255,255,255,0.75)',
   white05: 'rgba(255,255,255,0.5)',
@@ -132,6 +134,7 @@ export const palettes = (() => {
   }
 
   const lightPalette = [
+    color.main,
     color.white0,
     color.white075,
     color.white05,
@@ -155,6 +158,7 @@ export const palettes = (() => {
   ]
 
   const darkPalette = [
+    color.main,
     color.black0,
     color.black075,
     color.black05,

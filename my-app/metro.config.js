@@ -1,22 +1,26 @@
-// Learn more https://docs.expo.io/guides/customizing-metro
-/**
- * @type {import('expo/metro-config').MetroConfig}
- */
-const { getDefaultConfig } = require('expo/metro-config')
+const { getDefaultConfig } = require("expo/metro-config");
 
+// Configuração base do Expo
 const config = getDefaultConfig(__dirname, {
-  // [Web-only]: Enables CSS support in Metro.
   isCSSEnabled: true,
-})
+});
 
-// Enable Tamagui and add nice web support with optimizing compiler + CSS extraction
-const { withTamagui } = require('@tamagui/metro-plugin')
-module.exports = withTamagui(config, {
-  components: ['tamagui'],
-  config: './tamagui.config.ts',
-  outputCSS: './tamagui-web.css',
-})
+const { withTamagui } = require("@tamagui/metro-plugin");
+const tamaguiConfig = withTamagui(config, {
+  components: ["tamagui"],
+  config: "./tamagui.config.ts",
+  outputCSS: "./tamagui-web.css",
+});
 
-config.resolver.sourceExts.push('mjs')
 
-module.exports = config
+tamaguiConfig.transformer.babelTransformerPath = require.resolve(
+  "react-native-svg-transformer"
+);
+
+tamaguiConfig.resolver.assetExts = tamaguiConfig.resolver.assetExts.filter(
+  (ext) => ext !== "svg"
+);
+tamaguiConfig.resolver.sourceExts.push("svg");
+tamaguiConfig.resolver.sourceExts.push("mjs"); // Mantendo suporte para `.mjs`
+
+module.exports = tamaguiConfig;
