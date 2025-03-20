@@ -48,3 +48,13 @@ export const CREATE_COMMENT = gql`
     }
   }
 `;
+
+export const CREATE_POST = gql`
+  mutation CreatePost($createPost: CreatePostInput!) {
+    createPost(createPost: $createPost) {
+        content
+        createdAt
+        id
+        userId
+    }
+}`
