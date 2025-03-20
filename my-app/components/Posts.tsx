@@ -1,6 +1,5 @@
 import { useState, useContext } from "react";
 import {
-  Avatar,
   Button,
   Card,
   Text,
@@ -8,6 +7,7 @@ import {
   XStack,
   YStack,
   Image,
+  Separator,
 } from "tamagui";
 import { Heart, MessageCircle } from "@tamagui/lucide-icons";
 import { useQuery, useMutation } from "@apollo/client";
@@ -20,6 +20,7 @@ import { useAuth } from "context/AuthContext";
 import HeartFilled from "components/icons/heartFilled";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale/pt-BR";
+import Avatar from "./Avatar";
 
 export default function Post() {
   const { userId } = useAuth();
@@ -50,7 +51,7 @@ export default function Post() {
   };
 
   return (
-    <View width={"100%"}>
+    <View width={"100%"} items={"center"}>
       {data.postAll.map((item) => {
         const isCurrentlyLiked = item.isLiked || false;
         return (
@@ -60,24 +61,19 @@ export default function Post() {
               setSelectedPostId(item.id);
               router.push(`/post/${item.id}`);
             }}
-            elevate
             width="100%"
-            maxWidth={600}
             alignSelf="center"
-            borderRadius={0}
-            shadowColor="black"
-            shadowOpacity={0.1}
-            shadowRadius={8}
-            p={6}
+            pr={6}
+            pl={8}
+            pt={6}
             backgroundColor={backgroundColor}
           >
-            <YStack gap="$3">
+            <YStack gap="$3"
+              borderBottomWidth={1}
+              borderBottomColor="$borderColor">
               <XStack items="center" gap="$3">
-                <Avatar circular size="$4">
-                  <Avatar.Image src={item.user.avatarUrl} />
-                  <Avatar.Fallback bg="$blue10" />
-                </Avatar>
-                <Text fontFamily={"$heading"} fontSize={"$6"}>
+                <Avatar size={46} source={item.user.avatarUrl} />
+                <Text b={10} fontFamily={"$heading"} fontSize={"$6"}>
                   @{item.user.username}
                 </Text>
               </XStack>
@@ -85,7 +81,7 @@ export default function Post() {
                 fontFamily={"$body"}
                 fontSize={"$4"}
                 position="absolute"
-                t={30}
+                t={26}
                 l={60}
               >
                 Postou{" "}
@@ -94,13 +90,13 @@ export default function Post() {
                   locale: ptBR,
                 })}
               </Text>
-              <Text p={10} fontSize="$4">
+              <Text l={10} fontSize="$4">
                 {item.content}
               </Text>
-              <Image
+              {item.imageUrl != "null" ? <Image
                 src={item.imageUrl}
-                style={{ width: "auto", height: 300, borderRadius: 12 }}
-              />
+                style={{ width: "auto", height: 300, borderRadius: 8 }}
+              /> : ""}
               <XStack gap={8} justify="flex-end" items="center" p={4}>
                 <Button
                   chromeless

@@ -1,10 +1,11 @@
 import { useTheme } from "context/ThemeContext";
-import { Button } from "tamagui";
+import { Button, XStack, Text } from "tamagui";
 import { Sun, Moon } from "@tamagui/lucide-icons";
+import { mainColor } from "theme";
 
 export default function ToggleThemeButton() {
     const { toggleTheme, theme } = useTheme()
     return (
-        <Button width={30} onPress={toggleTheme} icon={theme == "dark" ? Sun : Moon}></Button>
+        <Button borderColor={mainColor} chromeless fontSize={16} onPress={toggleTheme} iconAfter={theme == "dark" ? Sun : Moon}>Alterar tema</Button>
     )
 }

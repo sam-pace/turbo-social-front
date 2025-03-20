@@ -38,7 +38,20 @@ export default function TurboCards(props: CardProps) {
 
   const items = data?.turboMarketAll || [];
   const isOddCount = items.length % 2 !== 0;
+ 
+  if (!items.length) {
+    return (
+      <View style={{
+        top: 100,
+        alignItems: "center",
+      }}>
+        <Text fontSize={24} fontFamily={"$heading"}
 
+        >cri cri cri cri... 🦗</Text>
+        <Text fontSize={16}>Eita, tá vazio aqui...</Text>
+        <Text fontSize={16}>Que tal ser o primeiro a publicar algo?</Text>
+      </View>)
+  }
   return (
     <XStack flexWrap="wrap" gap={6} justify="center">
       {items.map((item) => (
@@ -50,7 +63,7 @@ export default function TurboCards(props: CardProps) {
             router.push(`/card/${item.id}`);
           }}
         >
-          <Card.Header     
+          <Card.Header
             position="absolute"
             width={"60%"}
             height={"10%"}
@@ -72,7 +85,7 @@ export default function TurboCards(props: CardProps) {
               />
               <Avatar.Fallback delayMs={600} backgroundColor="$blue10" />
             </Avatar>
-            <Text color={"white"} fontWeight={100} p={0}>
+            <Text color={"whitesmoke"} fontWeight={100} p={0}>
               @{item.user.username || "user"}
             </Text>
           </Card.Header>
@@ -101,10 +114,10 @@ export default function TurboCards(props: CardProps) {
               borderBottomRightRadius={4}
             >
               <View>
-                <Text color={"white"} fontWeight="bold">
+                <Text color={"whitesmoke"} fontWeight="bold">
                   {item.title}
                 </Text>
-                <Text color={"white"} fontSize={10} lineBreakMode="clip">
+                <Text color={"whitesmoke"} fontSize={10} lineBreakMode="clip">
                   {truncateText(item.description, 50)}
                 </Text>
                 <XStack
@@ -134,7 +147,6 @@ export default function TurboCards(props: CardProps) {
           </Card.Footer>
         </Card>
       ))}
-
       {isOddCount && (
         <View width="48%" aspectRatio={0.8} opacity={0} pointerEvents="none" />
       )}

@@ -12,17 +12,17 @@ import {
 } from "tamagui";
 import { useRouter } from "expo-router";
 import { useAuth } from "context/AuthContext";
-import TransientModal from "./TransientModal";
 import { mainColor } from "theme";
 import { useForm } from "react-hook-form";
 import { Eye, EyeOff } from "@tamagui/lucide-icons";
+import { useToast } from "context/ToastContext";
 
 export default function Login() {
   const [open, setModalOpen] = useState(false);
-  const [visible, setTransientModal] = useState(false);
-  const [message, setMessage] = useState("");
   const { loading, loginUser } = useAuth();
   const [hidePass, setHidePass] = useState(false);
+  const router = useRouter();
+  const { showToast } = useToast();
 
   const {
     register,
@@ -37,7 +37,6 @@ export default function Login() {
     mode: "onChange",
   });
 
-  const router = useRouter();
 
   if (loading) {
     return (
@@ -49,10 +48,14 @@ export default function Login() {
 
   const onSubmit = async (data) => {
     setModalOpen(false);
-    const success = await loginUser(data.username, data.password);
+    const success = await loginUser(data.username.trim(), data.password);
+    console.warn(success)
     if (!success) {
-      setMessage("Login falhou. Verifique suas credenciais");
-      setTransientModal(true);
+      showToast({
+        title: "Falha no login",
+        description: "Verifique os campos e tente novamente",
+        type: "warning",
+      })
     }
   };
 
@@ -107,7 +110,7 @@ export default function Login() {
           mt={20}
           onPress={handleSubmit(onSubmit)}
           bg={mainColor}
-          color={"white"}
+          color={"whitesmoke"}
         >
           {loading ? <Spinner size="small" /> : "Entrar"}
         </Button>
@@ -118,7 +121,8 @@ export default function Login() {
             Ainda não tem uma conta? {" "}
           </Text>
           <Text onPress={() => {
-            router.push("/user/new");
+            router.push("/user/new")
+
           }}
             color={mainColor}
             dataDetectorType="link"
@@ -126,12 +130,6 @@ export default function Login() {
             Cadastre-se agora.
           </Text>
         </View>
-
-        <TransientModal
-          isVisible={visible}
-          message={message}
-          onHide={() => setTransientModal(false)}
-        />
       </Stack>
     </YStack>
   );
