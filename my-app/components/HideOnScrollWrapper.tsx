@@ -2,8 +2,7 @@ import React, { useRef } from 'react';
 import { Animated, ScrollView, View, StyleSheet } from 'react-native';
 import { useTheme } from 'context/ThemeContext';
 
-const HideOnScrollWrapper = ({ header, children }) => {
-  const scrollY = useRef(new Animated.Value(0)).current;
+const HideOnScrollWrapper = ({ header, children, scrollY   }) => {
   const { backgroundColor } = useTheme()
 
   const headerTranslateY = scrollY.interpolate({
@@ -25,16 +24,7 @@ const HideOnScrollWrapper = ({ header, children }) => {
       >
         {header}
       </Animated.View>
-
-      <ScrollView
-        scrollEventThrottle={16}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-          { useNativeDriver: false }
-        )}
-      >
         {children}
-      </ScrollView>
     </View>
   );
 };
