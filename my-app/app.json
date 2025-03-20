@@ -3,9 +3,9 @@
     "name": "expo-router-example",
     "slug": "expo-router-example",
     "extra": {
-      "SUPABASE_URL":
+      "SUPABASE_URL": 
       "SUPABASE_KEY": 
-      "GEMINI_API_KEY":
+      "GEMINI_API_KEY": 
     },
     "version": "1.0.0",
     "orientation": "portrait",
@@ -21,13 +21,15 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.anonymous.exporouterexample"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.anonymous.exporouterexample"
     },
     "web": {
       "bundler": "metro",
@@ -37,6 +39,13 @@
     "plugins": [
       "expo-router",
       "expo-font",
+      "expo-location",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(Turbo Market) to use your location."
+        }
+      ],
       [
         "expo-build-properties",
         {
