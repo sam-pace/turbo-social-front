@@ -112,12 +112,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setAccessToken(accessToken);
       setIsAuthenticated(true);
 
-      setTimeout(() => router.push("/(tabs)/home"), 500);
+      router.replace("/(tabs)/home")
       return true;
     } catch (error) {
       console.warn("Erro ao fazer login:", error);
       setIsAuthenticated(false);
-      setTimeout(() => router.push("/"), 500);
+      router.push("/")
       return false;
     }
   };
@@ -127,8 +127,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     await SecureStore.deleteItemAsync("refreshToken");
     setAccessToken(null);
     setIsAuthenticated(false);
-    setTimeout(() => router.push("/"), 500);
-  };
+    setUserId(null);
+
+    router.replace("/");
+
+  }
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -141,7 +144,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       } else {
         console.warn("Token inválido ou expirado.");
         setIsAuthenticated(false);
-        setTimeout(() => router.push("/"), 500);
       }
 
       setLoading(false);
