@@ -64,7 +64,7 @@ export default function Post() {
             width="100%"
             alignSelf="center"
             pr={6}
-            pl={8}
+            pl={9}
             pt={6}
             backgroundColor={backgroundColor}
           >

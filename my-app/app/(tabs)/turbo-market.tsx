@@ -7,10 +7,13 @@ import { router } from "expo-router";
 import TMarketLogo from "components/logos/TMarketLogo";
 import ToggleThemeButton from "components/ToggleThemeButton";
 import { useTheme } from "context/ThemeContext";
-import Avatar from "components/Avatar";
+import Avatar  from "components/Avatar";
+import { useState } from "react";
+import { UserPanel } from "app/user/panel";
 
 export default function TruboMarket() {
   const { backgroundColor } = useTheme();
+  const [isUserPanelOpen, setUserPanelOpen] = useState(false);
   return (
     <ApolloProvider client={client}>
       <View flex={1} bg={backgroundColor}>
@@ -39,16 +42,19 @@ export default function TruboMarket() {
                 <CirclePlus strokeWidth={1} size={40} />
               </Button.Icon>
             </Button>
-            <Avatar size={40} />
+            <View onPress={() => setUserPanelOpen(true)}>
+              <Avatar size={40} />
+            </View>
           </XStack>
 
         </XStack>
 
         <ScrollView showsVerticalScrollIndicator={false}>
-          <View paddingHorizontal={5}>
+          <View>
             <TurboCards />
           </View>
         </ScrollView>
+        <UserPanel open={isUserPanelOpen} setModalOpen={setUserPanelOpen} />
       </View>
     </ApolloProvider>
   );

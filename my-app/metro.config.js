@@ -17,6 +17,8 @@ tamaguiConfig.transformer.babelTransformerPath = require.resolve(
   "react-native-svg-transformer"
 );
 
+config.resolver.unstable_conditionNames = ['require', 'default', 'browser']
+config.resolver.unstable_enablePackageExports = true
 tamaguiConfig.resolver.assetExts = tamaguiConfig.resolver.assetExts.filter(
   (ext) => ext !== "svg"
 );

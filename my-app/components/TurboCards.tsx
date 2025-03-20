@@ -38,7 +38,7 @@ export default function TurboCards(props: CardProps) {
 
   const items = data?.turboMarketAll || [];
   const isOddCount = items.length % 2 !== 0;
- 
+
   if (!items.length) {
     return (
       <View style={{
@@ -53,29 +53,39 @@ export default function TurboCards(props: CardProps) {
       </View>)
   }
   return (
-    <XStack flexWrap="wrap" gap={6} justify="center">
+    <XStack
+      flexWrap="wrap"
+      gap={4}
+      justify="center"
+      pr={2}
+      pl={3}
+      pt={6}>
       {items.map((item) => (
         <Card
           key={item.id}
           width="48%"
           aspectRatio={0.8}
+          borderRadius={2}
+
           onPress={() => {
             router.push(`/card/${item.id}`);
           }}
         >
           <Card.Header
             position="absolute"
-            width={"60%"}
+            width={"auto"}
             height={"10%"}
             bg="rgba(0,0,0,0.4)"
             flexDirection="row"
             justify="flex-start"
             gap={4}
             items="center"
+            borderTopLeftRadius={8}
             borderBottomRightRadius={20}
             p={0}
+            pr={8}
           >
-            <Avatar circular size="$1">
+            <Avatar circular size="$1" p={4}>
               <Avatar.Image
                 accessibilityLabel="Avatar Image"
                 src={
@@ -92,9 +102,12 @@ export default function TurboCards(props: CardProps) {
           <Card.Background>
             <Image
               objectFit="cover"
-              source={{
+              style={{
                 width: "100%",
                 height: "99%",
+                borderRadius: 8
+              }}
+              source={{
                 uri:
                   item.imageUrl ||
                   "https://upload.wikimedia.org/wikipedia/commons/a/a9/Example.jpg",
@@ -110,8 +123,7 @@ export default function TurboCards(props: CardProps) {
               colors={["rgba(0,0,0,0)", themes.dark.gray1]}
               locations={[0, 0.8]}
               padding={10}
-              borderBottomLeftRadius={4}
-              borderBottomRightRadius={4}
+              style={{ borderRadius: 8 }}
             >
               <View>
                 <Text color={"whitesmoke"} fontWeight="bold">
@@ -132,14 +144,15 @@ export default function TurboCards(props: CardProps) {
                     R$ {formatPrice(item.price)}
                   </Text>
                   <Button
-                    size={10}
+                    size={40}
+                    color={"whitesmoke"}
                     variant="outlined"
-                    iconAfter={ArrowDownRight}
+                    borderWidth={0.5}
                     onPress={() => {
                       router.push(`/card/${item.id}`);
                     }}
                   >
-                    Ver mais
+                    Detalhes
                   </Button>
                 </XStack>
               </View>

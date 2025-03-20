@@ -1,17 +1,14 @@
-import { ApolloProvider, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import Post from "components/Posts";
-import client from "backend/apolloClient";
-import { Redirect, router } from "expo-router";
+import { router } from "expo-router";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { Button, View, Text, YStack, XStack } from "tamagui";
-import { themes } from "theme";
-import { ArrowBigLeft, CirclePlus } from "@tamagui/lucide-icons";
+import { Button, View, YStack, XStack } from "tamagui";
+import { CirclePlus } from "@tamagui/lucide-icons";
 import { useAuth } from "context/AuthContext";
 import { useTheme } from "context/ThemeContext";
-import { ActivityIndicator, RefreshControl, ScrollView } from "react-native";
-import ToggleThemeButton from "components/ToggleThemeButton";
+import { ActivityIndicator, Animated, RefreshControl, ScrollView } from "react-native";
 import ThubLogo from "components/logos/THubLogo";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { GET_POSTS } from "graphql/query";
 import Avatar from "components/Avatar";
 import Curiosities from "lib/curiosities";
@@ -24,6 +21,15 @@ export default function Home() {
   const { backgroundColor } = useTheme();
   const { refetch } = useQuery(GET_POSTS, { fetchPolicy: "network-only" });
   const [isUserPanelOpen, setUserPanelOpen] = useState(false);
+  
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const scrollY = useRef(new Animated.Value(0)).current
+  const scrollTop = scrollY.interpolate({
+    inputRange: [0, 100],
+    outputRange: [120, 0],
+    extrapolate: "clamp",
+
+  });
   const header = (
     <XStack
             flexDirection="row"
@@ -54,8 +60,6 @@ export default function Home() {
           </XStack>
   )
 
-  const [isRefreshing, setIsRefreshing] = useState(false);
-
   const onRefresh = useCallback(() => {
     setIsRefreshing(true);
     refetch({ fetchPolicy: "network-only" })
@@ -75,16 +79,18 @@ export default function Home() {
   // }
 
   return (
-    <ApolloProvider client={client}>
       <SafeAreaProvider>
         <View flex={1} width={"100%"} height={"100%"} bg={backgroundColor}>
-          <HideOnScrollWrapper header={header}>
-          <ScrollView
-          style={{ top: 120}}
-            showsVerticalScrollIndicator={false}
-            refreshControl={
-              <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
-            }
+          <HideOnScrollWrapper header={header} scrollY={scrollY}
+            >
+          <Animated.ScrollView
+          refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />}
+          style={{ top: scrollTop }}
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+            { useNativeDriver: false }
+          )}
+            
           >
             <Curiosities onRefresh={onRefresh} />
             <View position="absolute" t={76} l={16} flex={1}>
@@ -93,12 +99,11 @@ export default function Home() {
             <YStack flex={1} justify={"center"}>
               <Post />
             </YStack>
-          </ScrollView>
+          </Animated.ScrollView>
           </HideOnScrollWrapper>
           
         </View>
         <UserPanel open={isUserPanelOpen} setModalOpen={setUserPanelOpen} />
       </SafeAreaProvider>
-    </ApolloProvider>
   );
 }

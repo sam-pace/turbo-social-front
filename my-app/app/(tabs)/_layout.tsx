@@ -33,18 +33,21 @@ export default function TabsLayout() {
         <Tabs.Screen
           name="home"
           options={{
+            title:"Home",
             tabBarIcon: ({ color }) => <HomeIcon color={color} size={24} />,
           }}
         />
         <Tabs.Screen
           name="turbo-market"
           options={{
+            title:"Turbo Market",
             tabBarIcon: ({ color }) => <ShoppingCart color={color} size={24} />,
           }}
         />
         <Tabs.Screen
           name="explore"
           options={{
+            title:"Explorar",
             tabBarIcon: ({ color }) => <Globe color={color} size={24} />,
           }}
         />

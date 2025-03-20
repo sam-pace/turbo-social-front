@@ -134,6 +134,10 @@ export const CommentModal = ({ open, setModalOpen, postId }) => {
   const numberOfLines = comment.split('\n').length
 
   return (
+    <KeyboardAvoidingView
+    behavior={Platform.OS === "ios" ? "padding" : "height"}
+    keyboardVerticalOffset={Platform.OS === "ios" ? 1 : 0}
+  >
     <BottomSheet
       animateOnMount={true}
       ref={bottomSheetRef}
@@ -145,10 +149,7 @@ export const CommentModal = ({ open, setModalOpen, postId }) => {
       onChange={handleSheetChange}
     >
       <BottomSheetView>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          keyboardVerticalOffset={Platform.OS === "ios" ? 1 : 0}
-        >
+       
           <YStack padding={16} width="100%">
             <XStack justifyContent="space-between" alignItems="center">
               <Text fontSize={16} fontWeight="bold">
@@ -188,8 +189,8 @@ export const CommentModal = ({ open, setModalOpen, postId }) => {
               />
             </XStack>
           </YStack>
-        </KeyboardAvoidingView>
       </BottomSheetView>
     </BottomSheet>
+        </KeyboardAvoidingView>
   );
 };

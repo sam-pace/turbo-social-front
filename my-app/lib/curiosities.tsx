@@ -86,7 +86,7 @@ const CuriosityComponent = ({ onRefresh }) => {
         </Text>
       </Label>
       <View style={{ marginTop: 10 }}>
-        <Text style={{ fontSize: 16, color: "#333" }}>
+        <Text>
           {currentCuriosity ||
             "Aqui você verá curiosidades do mundo automotivo..."}
         </Text>

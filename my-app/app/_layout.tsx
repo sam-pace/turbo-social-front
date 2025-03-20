@@ -3,9 +3,9 @@ import "../tamagui-web.css";
 import { useEffect, useState } from "react";
 import { StatusBar, useColorScheme } from "react-native";
 import { useFonts } from "expo-font";
-import { router, Slot, SplashScreen, Stack } from "expo-router";
+import { SplashScreen, Stack } from "expo-router";
 import { Provider } from "./Provider";
-import { TamaguiProvider, Theme, View, Text, Button } from "tamagui";
+import { TamaguiProvider, Theme } from "tamagui";
 import { AuthProvider } from "context/AuthContext";
 import { ApolloProvider } from "@apollo/client";
 import client from "backend/apolloClient";
@@ -15,6 +15,9 @@ import config from "tamagui.config";
 import { ThemeProvider, useTheme } from "context/ThemeContext";
 import DevTag from "../components/DevTag";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import ProtectedRoute from "hoc/ProtectedRoute";
+import { ToastProvider } from "context/ToastContext";
+
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
@@ -50,7 +53,7 @@ export default function RootLayout() {
         <ThemeProvider>
           <Providers>
             <RootLayoutNav />
-            <DevTag />
+            {/* <DevTag /> */}
           </Providers>
         </ThemeProvider>
       </TamaguiProvider>
@@ -65,8 +68,7 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
   const { theme } = useTheme();
-  const avatarFallback =
-    "https://i0.wp.com/digitalhealthskills.com/wp-content/uploads/2022/11/3da39-no-user-image-icon-27.png";
+  const publicRoutes = ["index", "user/new",];
 
   return (
     <AuthProvider>
@@ -74,71 +76,89 @@ function RootLayoutNav() {
         <StatusBar
           barStyle={colorScheme === "dark" ? "light-content" : "dark-content"}
         />
+
         <GestureHandlerRootView style={{ flex: 1 }}>
-          <Stack>
-            <Stack.Screen
-              name="(tabs)"
-              options={{
-                headerShown: false,
-              }}
-            />
+          <ToastProvider>
+          <ProtectedRoute publicRoutes={publicRoutes}>
+            <Stack>
+              <Stack.Screen
+                name="(tabs)"
+                options={{
+                  headerShown: false,
+                }}
+              />
 
-            <Stack.Screen
-              name="index"
-              options={{
-                headerShown: false,
-                presentation: "fullScreenModal",
-                animation: "simple_push",
-                gestureEnabled: true,
-                gestureDirection: "horizontal",
-              }}
-            />
+              <Stack.Screen
+                name="index"
+                options={{
+                  headerShown: false,
+                  presentation: "fullScreenModal",
+                  animation: "simple_push",
+                  gestureEnabled: true,
+                  gestureDirection: "horizontal",
+                }}
+              />
 
-            <Stack.Screen
-              name="user/new"
-              options={{
-                headerShown: false,
-                presentation: "modal",
-                animation: "simple_push",
-                gestureEnabled: true,
-                gestureDirection: "vertical",
-              }}
-            />
+              <Stack.Screen
+                name="user/new"
+                options={{
+                  headerShown: false,
+                  presentation: "modal",
+                  animation: "simple_push",
+                  gestureEnabled: true,
+                  gestureDirection: "vertical",
+                }}
+              />
 
-            <Stack.Screen
-              name="card/[id]"
-              options={{
-                headerShown: false,
-                presentation: "formSheet",
-                animation: "simple_push",
-                gestureEnabled: true,
-                gestureDirection: "horizontal",
-              }}
-            />
+              <Stack.Screen
+                name="card/[id]"
+                options={{
+                  headerShown: false,
+                  presentation: "formSheet",
+                  animation: "simple_push",
+                  gestureEnabled: true,
+                  gestureDirection: "horizontal",
+                }}
+              />
 
-            <Stack.Screen
-              name="card/new"
-              options={{
-                headerShown: false,
-                presentation: "card",
-                animation: "slide_from_right",
-                gestureEnabled: true,
-                gestureDirection: "horizontal",
-              }}
-            />
+              <Stack.Screen
+                name="card/new"
+                options={{
+                  headerShown: false,
+                  presentation: "card",
+                  animation: "slide_from_right",
+                  gestureEnabled: true,
+                  gestureDirection: "horizontal",
+                }}
+              />
 
-            <Stack.Screen
-              name="post/[id]"
-              options={{
-                sheetExpandsWhenScrolledToEdge: true,
-                headerShown: false,
-                presentation: "formSheet",
-                animation: "slide_from_bottom",
-                gestureEnabled: true,
-                gestureDirection: "horizontal",
-              }}
-            />
-          </Stack>
+              <Stack.Screen
+                name="post/[id]"
+                options={{
+                  sheetExpandsWhenScrolledToEdge: true,
+                  headerShown: false,
+                  presentation: "formSheet",
+                  animation: "slide_from_bottom",
+                  gestureEnabled: true,
+                  gestureDirection: "horizontal",
+                }}
+              />
+
+              <Stack.Screen
+                name="post/new"
+                options={{
+                  sheetExpandsWhenScrolledToEdge: true,
+                  headerShown: false,
+                  presentation: "formSheet",
+                  animation: "slide_from_bottom",
+                  gestureEnabled: true,
+                  gestureDirection: "horizontal",
+                }}
+              />
+            </Stack>
+
+          </ProtectedRoute>
+          </ToastProvider>
         </GestureHandlerRootView>
       </Theme>
     </AuthProvider>

@@ -7,8 +7,19 @@ const client = new ApolloClient({
       mode: 'no-cors'
     }
   }),
-  cache: new InMemoryCache(),
-  
+  cache: new InMemoryCache({
+    typePolicies: {
+      Query: {
+        fields: {
+          posts: {
+            read() {
+              return null;
+            }
+          }
+        }
+      }
+    }
+  }),
 });
 
 export default client;
